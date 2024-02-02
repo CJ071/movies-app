@@ -2,7 +2,7 @@ import React from 'react'
 
 function Rated() {
   return (
-    <div>
+    <div style={{marginTop:50}}>
       Rated stuff
     </div>
   )
