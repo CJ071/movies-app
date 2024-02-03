@@ -1,0 +1,48 @@
+what bothered me alot was this issue
+
+Certainly! In your original code, you were using Bearer Token Authentication to authenticate requests made to the TMDB API. However, when you switched to Guest Session Authentication, you needed to send the Guest Session ID along with the API key in the request URL parameters.
+
+Here's how the change solved the issue:
+
+1. **Authentication Method:**
+   - Initially, you were using Bearer Token Authentication by including an Authorization header with a Bearer token.
+   - With Bearer Token Authentication, the API requests were authenticated using your TMDB account, which was not what you intended.
+
+2. **Switching to API Key Authentication:**
+   - By removing the Authorization header and directly passing the API key in the request URL parameters, you switched to API Key Authentication.
+   - With API Key Authentication, each request is authenticated using the provided API key.
+   - This change ensured that the requests were associated with the Guest Session ID you provided in the URL parameters, allowing the ratings to be linked to the guest session instead of your TMDB account.
+
+Here's the modified code snippet where you removed the Authorization header and included the API key directly in the URL parameters:
+
+```javascript
+export const rateMovie = async (movie_id, rating) => {
+    const res = await fetch(`https://api.themoviedb.org/3/movie/${movie_id}/rating?guest_session_id=${localStorage.getItem("guest_session_id")}&api_key=${import.meta.env.VITE_API_KEY}`, {
+        method: 'POST',
+        headers: {
+            accept: 'application/json',
+            'Content-Type': 'application/json;charset=utf-8',
+            // Removed the Authorization header
+        },
+        body: `{"value":${rating}}`
+    });
+
+    return res.json();
+}
+
+export const rateTvShow = async (tvShow_id, rating) => {
+    const res = await fetch(`https://api.themoviedb.org/3/tv/${tvShow_id}/rating?guest_session_id=${localStorage.getItem("guest_session_id")}&api_key=${import.meta.env.VITE_API_KEY}`, {
+        method: 'POST',
+        headers: {
+            accept: 'application/json',
+            'Content-Type': 'application/json;charset=utf-8',
+            // Removed the Authorization header
+        },
+        body: `{"value":${rating}}`
+    });
+
+    return res.json();
+}
+```
+
+By making this change, your API requests were correctly authenticated using the Guest Session ID and API key, resolving the issue with ratings being linked to your TMDB account instead of the guest session.
